@@ -1,12 +1,14 @@
 
-package org.usfirst.frc.team2877.robot;
+package org.ligerbots.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import org.usfirst.frc.team2877.robot.commands.DriveCommand;
-import org.usfirst.frc.team2877.robot.subsystems.DriveSubsystem;
+
+import org.ligerbots.robot.commands.DriveCommand;
+import org.ligerbots.robot.subsystems.DriveSubsystem;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

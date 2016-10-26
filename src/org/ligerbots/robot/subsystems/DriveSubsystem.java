@@ -1,7 +1,7 @@
 
-package org.usfirst.frc.team2877.robot.subsystems;
+package org.ligerbots.robot.subsystems;
 
-import org.usfirst.frc.team2877.robot.RobotMap;
+import org.ligerbots.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.RobotDrive;
