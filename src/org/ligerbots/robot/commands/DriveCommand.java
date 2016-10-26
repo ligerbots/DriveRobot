@@ -13,7 +13,7 @@ public class DriveCommand extends Command {
 
     public DriveCommand() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.exampleSubsystem);
+        requires(Robot.driveSubsystem);
     }
 
     // Called just before this Command runs the first time
@@ -30,10 +30,14 @@ public class DriveCommand extends Command {
     	// of the right joystick
     	// double x = Robot.oi.mJoystick.getX(); -- normal "Arcade Drive"
     	double x = Robot.oi.mJoystick.getRawAxis(4);  // Ligerbots tank drive
+    	
+    	// -y is forward!
+    	Robot.driveSubsystem.drive(-y, x);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+    	// Drive command runs forever, or else the robot would stop driving
         return false;
     }
 

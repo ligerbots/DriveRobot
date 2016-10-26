@@ -23,7 +23,7 @@ public class DriveSubsystem extends Subsystem {
 	CANTalon mRight3;
 	RobotDrive mRobotDrive;
 	
-	DriveSubsystem() {
+	public DriveSubsystem() {
 		mLeft1 = new CANTalon(RobotMap.CT_DRIVE_LEFT1);
 		mLeft2 = new CANTalon(RobotMap.CT_DRIVE_LEFT2);
 		mLeft3 = new CANTalon(RobotMap.CT_DRIVE_LEFT3);
