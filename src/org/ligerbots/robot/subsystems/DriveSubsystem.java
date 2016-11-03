@@ -42,14 +42,18 @@ public class DriveSubsystem extends Subsystem {
 		
 		mLeft2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mLeft2.set(RobotMap.CT_DRIVE_LEFT1);
+		mLeft2.enableControl();
 		mLeft3.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mLeft3.set(RobotMap.CT_DRIVE_LEFT1);
+		mLeft3.enableControl();
 		
 		mRight2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mRight2.set(RobotMap.CT_DRIVE_RIGHT1);
+		mRight2.enableControl();
 
 		mRight3.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mRight3.set(RobotMap.CT_DRIVE_RIGHT1);
+		mRight3.enableControl();
 		
 		mRobotDrive = new RobotDrive(mLeft1, mRight1);
 		
@@ -61,7 +65,7 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void drive(double y, double x) {
-    	mRobotDrive.arcadeDrive(y, x);
+    	mRobotDrive.tankDrive(y, x);
     }
 }
 
