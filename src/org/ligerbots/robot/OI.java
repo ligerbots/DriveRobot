@@ -1,9 +1,6 @@
 package org.ligerbots.robot;
 
-import org.ligerbots.robot.commands.DriveCommand;
-
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -40,7 +37,7 @@ public class OI {
 	public Joystick mJoystick;
 	
 	public OI() {
-		mJoystick = new Joystick(1);
+		mJoystick = new Joystick(0);
 	}
 }
 

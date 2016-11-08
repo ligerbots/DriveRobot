@@ -1,6 +1,8 @@
 
 package org.ligerbots.robot.subsystems;
 
+import java.util.Arrays;
+
 import org.ligerbots.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -42,18 +44,17 @@ public class DriveSubsystem extends Subsystem {
 		
 		mLeft2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mLeft2.set(RobotMap.CT_DRIVE_LEFT1);
-		mLeft2.enableControl();
+		
 		mLeft3.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mLeft3.set(RobotMap.CT_DRIVE_LEFT1);
-		mLeft3.enableControl();
 		
 		mRight2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mRight2.set(RobotMap.CT_DRIVE_RIGHT1);
-		mRight2.enableControl();
 
 		mRight3.changeControlMode(CANTalon.TalonControlMode.Follower);
 		mRight3.set(RobotMap.CT_DRIVE_RIGHT1);
-		mRight3.enableControl();
+		
+		Arrays.asList(mLeft1, mLeft2, mLeft3, mRight1, mRight2, mRight3).forEach((CANTalon talon) -> talon.enableBrakeMode(true));
 		
 		mRobotDrive = new RobotDrive(mLeft1, mRight1);
 		
@@ -65,7 +66,7 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public void drive(double y, double x) {
-    	mRobotDrive.tankDrive(y, x);
+    	mRobotDrive.arcadeDrive(y, x);
     }
 }
 

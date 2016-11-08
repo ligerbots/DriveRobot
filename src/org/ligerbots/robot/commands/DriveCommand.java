@@ -1,7 +1,6 @@
 
 package org.ligerbots.robot.commands;
 
-import org.ligerbots.robot.OI;
 import org.ligerbots.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -22,7 +21,7 @@ public class DriveCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double y = Robot.oi.mJoystick.getY();
+    	double y = Robot.oi.mJoystick.getRawAxis(1);
     	
     	// Ligerbots traditionally do "tank" drive. That means we use the 
     	// right joystick on the XBox controller for left/right control, instead 
