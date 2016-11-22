@@ -2,6 +2,7 @@
 package org.ligerbots.robot;
 
 import org.ligerbots.robot.commands.DriveCommand;
+import org.ligerbots.robot.subsystems.CompressorSubsystem;
 import org.ligerbots.robot.subsystems.DriveSubsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class Robot extends IterativeRobot {
 
 	public static final DriveSubsystem driveSubsystem = new DriveSubsystem();
+	public static final CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
 	public static final DriveCommand driveCommand = new DriveCommand();
 	public static OI oi;
 
@@ -95,6 +97,8 @@ public class Robot extends IterativeRobot {
         // this line or comment it out.
         if (autonomousCommand != null) autonomousCommand.cancel();
         driveCommand.start();
+        
+        compressorSubsystem.setCompressorOn(true);
     }
 
     /**
