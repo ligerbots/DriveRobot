@@ -1,5 +1,7 @@
 package org.ligerbots.robot;
 
+import org.ligerbots.robot.commands.CompressorCommand;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -35,9 +37,14 @@ public class OI {
     // button.whenReleased(new ExampleCommand());
 	
 	public Joystick mJoystick;
+	Joystick.ButtonType toggleCompressor;
 	
 	public OI() {
+		CompressorCommand toggleCompressorCommand = new CompressorCommand();
 		mJoystick = new Joystick(0);
+		
+		//toggleCompressor.w
+		
 	}
 }
 
