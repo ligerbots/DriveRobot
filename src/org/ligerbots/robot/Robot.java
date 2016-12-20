@@ -4,6 +4,7 @@ package org.ligerbots.robot;
 import org.ligerbots.robot.commands.DriveCommand;
 import org.ligerbots.robot.subsystems.CompressorSubsystem;
 import org.ligerbots.robot.subsystems.DriveSubsystem;
+import org.ligerbots.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -22,6 +23,7 @@ public class Robot extends IterativeRobot {
 
 	public static final DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static final CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
+	public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 	public static final DriveCommand driveCommand = new DriveCommand();
 	public static OI oi;
 

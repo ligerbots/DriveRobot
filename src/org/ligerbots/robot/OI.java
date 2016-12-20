@@ -1,6 +1,7 @@
 package org.ligerbots.robot;
 
 import org.ligerbots.robot.commands.CompressorCommand;
+import org.ligerbots.robot.commands.ShootCommand;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -38,17 +39,18 @@ public class OI {
     // button.whenReleased(new ExampleCommand());
 	
 	public Joystick mJoystick;
-	public JoystickButton mJoystickButton;
+	public JoystickButton mCompressorButton, mShootButton;
 	
 	Joystick.ButtonType toggleCompressor;
 	
 	public OI() {
 		CompressorCommand toggleCompressorCommand = new CompressorCommand();
 		mJoystick = new Joystick(0);
-		mJoystickButton = new JoystickButton(mJoystick, 8);
-		mJoystickButton.whenPressed(toggleCompressorCommand);
+		mCompressorButton = new JoystickButton(mJoystick, 8);
+		mCompressorButton.whenPressed(toggleCompressorCommand);
 
-		
+		mShootButton = new JoystickButton(mJoystick, 3);
+		mShootButton.whenPressed(new ShootCommand());
 	}
 }
 
