@@ -26,4 +26,5 @@ public class RobotMap {
 	public static final int CT_DRIVE_RIGHT3 = 6;
 	
 	public static final int CAN_PCM_ID = 7;
+	public static final int RELAY_LED_RING = 0;
 }
