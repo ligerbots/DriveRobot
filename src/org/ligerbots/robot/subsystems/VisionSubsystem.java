@@ -1,9 +1,9 @@
 package org.ligerbots.robot.subsystems;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 import org.ligerbots.robot.RobotMap;
 
@@ -35,32 +35,30 @@ public class VisionSubsystem extends Subsystem implements Runnable {
 	public void initDefaultCommand() {
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public void run() {
-		DatagramSocket udpSocket = null;
+		DatagramChannel udpChannel = null;
 		InetSocketAddress sendAddress = null;
+		ByteBuffer recvPacket = null;
+		byte[] feedbackMessage = "👌".getBytes();
+		ByteBuffer feedbackPacket = ByteBuffer
+				.allocateDirect(feedbackMessage.length);
+		feedbackPacket.put(feedbackMessage);
+		long lastFeedbackTime = System.currentTimeMillis();
+
+		// set up UDP
 		try {
-			udpSocket = new DatagramSocket(null);
-			udpSocket.setReuseAddress(true);
-			udpSocket.bind(new InetSocketAddress(5810));
+			udpChannel = DatagramChannel.open();
+			udpChannel.socket().setReuseAddress(true);
+			udpChannel.socket().bind(new InetSocketAddress(5810));
+			udpChannel.configureBlocking(false);
+
+			recvPacket = ByteBuffer
+					.allocateDirect(udpChannel.socket().getReceiveBufferSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Begin forwarding");
-		DatagramPacket packet = null;
-		try {
-			packet = new DatagramPacket(
-					new byte[udpSocket.getReceiveBufferSize()],
-					udpSocket.getReceiveBufferSize());
-		} catch (SocketException e1) {
-			e1.printStackTrace();
-		}
-
-		long lastFeedbackTime = System.currentTimeMillis();
-		DatagramPacket feedbackPacket = new DatagramPacket(
-				new byte[] { 'O', 'K' }, 2);
-
+		
 		while (true) {
 			try {
 				// steal the driver laptop's IP from networktables
@@ -68,6 +66,7 @@ public class VisionSubsystem extends Subsystem implements Runnable {
 					ConnectionInfo[] connections = NetworkTablesJNI
 							.getConnections();
 					for (ConnectionInfo connInfo : connections) {
+						// we want the laptop, not the phone
 						if (connInfo.remote_id.equals("Android"))
 							continue;
 						sendAddress = new InetSocketAddress(connInfo.remote_ip,
@@ -75,17 +74,38 @@ public class VisionSubsystem extends Subsystem implements Runnable {
 					}
 				}
 
-				udpSocket.receive(packet);
+				// get a packet from the phone
+				SocketAddress from = null;
+				recvPacket.limit(recvPacket.capacity());
+				recvPacket.position(0);
+				int length = -1;
+				from = udpChannel.receive(recvPacket);
 
-				if (System.currentTimeMillis() - lastFeedbackTime > 1000) {
+				// if we have a packet and it's time to tell the phone we're
+				// getting packets then tell the phone we're getting packets
+				if (from != null && System.currentTimeMillis()
+						- lastFeedbackTime > 1000) {
 					lastFeedbackTime = System.currentTimeMillis();
-					feedbackPacket.setSocketAddress(packet.getSocketAddress());
-					udpSocket.send(feedbackPacket);
+					feedbackPacket.position(0);
+					udpChannel.send(feedbackPacket, from);
 				}
 
-				if (sendAddress != null) {
-					packet.setSocketAddress(sendAddress);
-					udpSocket.send(packet);
+				// if sending packets to the driver laptop turns out to be
+				// slower than receiving packets from the phone, then drop
+				// everything except the latest packet
+				while (from != null) {
+					// save the length of what we got last time
+					length = recvPacket.position();
+					recvPacket.position(0);
+					from = udpChannel.receive(recvPacket);
+				}
+
+				if (sendAddress != null && length > -1) {
+					// make sure to forward a packet of the same length, by
+					// setting the limit on the bytebuffer
+					recvPacket.limit(length);
+					recvPacket.position(0);
+					udpChannel.send(recvPacket, sendAddress);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
