@@ -74,6 +74,10 @@ public class DriveSubsystem extends Subsystem {
 	public void drive(double y, double x) {
 		mRobotDrive.arcadeDrive(y, x);
 	}
+	
+	public void zeroYaw() {
+		mNavX.zeroYaw();
+	}
 
 	public void updateSmartDashboard() {
 		SmartDashboard.putBoolean("IMU_Connected", mNavX.isConnected());

@@ -58,6 +58,8 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		driveSubsystem.updateSmartDashboard();
+		visionSubsystem.setVisionEnabled(false);
 	}
 
 	/**
@@ -92,6 +94,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        driveSubsystem.updateSmartDashboard();
     }
 
     public void teleopInit() {
@@ -104,6 +107,7 @@ public class Robot extends IterativeRobot {
         
         compressorSubsystem.setCompressorOn(true);
         visionSubsystem.setLedRingOn(true);
+        driveSubsystem.zeroYaw();
     }
 
     /**
@@ -113,6 +117,7 @@ public class Robot extends IterativeRobot {
         Scheduler.getInstance().run();
         
         driveSubsystem.updateSmartDashboard();
+        visionSubsystem.setVisionEnabled(true);
     }
     
     /**
