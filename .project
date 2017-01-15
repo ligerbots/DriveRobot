@@ -3,6 +3,7 @@
 	<name>DriveRobot</name>
 	<comment></comment>
 	<projects>
+		<project>navx_frc</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
