@@ -11,4 +11,4 @@ I strongly advise simply installing the libraries. THis can most easily accompli
 For Java, we only need one directory out of that project -- the java/lib directory. This contents of this directory (CTRLib.jar, libCTRLibDriver.so,
 libCTRLibDriver.so.debug) should be copied to your wpilib/user/java/lib directory. On Windows your wpilib directory is installed in your user
 profile (%userprofile% -- usually c:\\Users\\*yourusername*)
-2. The NavX libraries from kauailabs labs. Download the cross-platform library package. from this page: http://www.pdocs.kauailabs.com/navx-mxp/software/roborio-libraries/java/. Navigate to navx-mxp-libs\roborio\java\lib in the .zip file, and copy navx_frc.jar. Copy that into wpilib/user/java/lib directory, just like you did for the TalonSRX
+2. The NavX libraries from kauailabs labs. Download the cross-platform library package from this page: http://www.pdocs.kauailabs.com/navx-mxp/software/roborio-libraries/java/. Navigate to navx-mxp-libs\roborio\java\lib in the .zip file, and copy navx_frc.jar. Copy that into wpilib/user/java/lib directory, just like you did for the TalonSRX
