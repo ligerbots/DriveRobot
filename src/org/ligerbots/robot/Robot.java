@@ -1,6 +1,7 @@
 
 package org.ligerbots.robot;
 
+import java.lang.System;
 import org.ligerbots.robot.commands.DriveCommand;
 import org.ligerbots.robot.subsystems.CompressorSubsystem;
 import org.ligerbots.robot.subsystems.DriveSubsystem;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,6 +30,8 @@ public class Robot extends IterativeRobot {
 	public static final VisionSubsystem visionSubsystem = new VisionSubsystem();
 	public static final DriveCommand driveCommand = new DriveCommand();
 	public static OI oi;
+	private long mtimeSplit = 0;  // like a stopwatch "split" 
+	private int mtickCounter = 0; // count control loop ticks
 
     Command autonomousCommand;
     SendableChooser chooser;
@@ -84,7 +88,9 @@ public class Robot extends IterativeRobot {
 			autonomousCommand = new ExampleCommand();
 			break;
 		} */
-    	
+        visionSubsystem.setLedRingOn(true);
+        visionSubsystem.setVisionEnabled(true);
+
     	// schedule the autonomous command (example)
         if (autonomousCommand != null) autonomousCommand.start();
     }
@@ -93,8 +99,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-        Scheduler.getInstance().run();
-        driveSubsystem.updateSmartDashboard();
+    	commonPeriodic();
     }
 
     public void teleopInit() {
@@ -107,6 +112,7 @@ public class Robot extends IterativeRobot {
         
         compressorSubsystem.setCompressorOn(true);
         visionSubsystem.setLedRingOn(true);
+        visionSubsystem.setVisionEnabled(true);
         driveSubsystem.zeroYaw();
     }
 
@@ -114,12 +120,23 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        Scheduler.getInstance().run();
-        
-        driveSubsystem.updateSmartDashboard();
-        visionSubsystem.setVisionEnabled(true);
+    	commonPeriodic();
     }
     
+    
+    private void commonPeriodic() {
+        Scheduler.getInstance().run();
+        driveSubsystem.updateSmartDashboard();
+    	// take time ticks every 50 cycles 
+    	if ((mtickCounter++) % 50 == 0) {
+    		long lastSplit = mtimeSplit;
+    		mtimeSplit = System.nanoTime();
+    		double deltaTime = (double)(mtimeSplit - lastSplit)/1.0E9;
+    		SmartDashboard.putNumber("TimeFor50Ticks", deltaTime);
+    		// spam console every 250 ticks (should be 5 seconds!). Only output time for last 50 ticks
+    		if ((mtickCounter++ % 250) == 0) System.console().printf("50 ticks took %4.2f seconds", deltaTime);
+    	}
+    }
     /**
      * This function is called periodically during test mode
      */
