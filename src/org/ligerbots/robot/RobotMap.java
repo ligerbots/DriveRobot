@@ -18,12 +18,17 @@ public class RobotMap {
 
   // left = 1, 3, 5
   // right = 2, 4, 6
+  // FUTURE: allow multiple configurations
+  public static final int CT_ABSENT = -1;
   public static final int CT_DRIVE_LEFT1 = 1;
   public static final int CT_DRIVE_LEFT2 = 3;
-  public static final int CT_DRIVE_LEFT3 = 5;
+  public static final int CT_DRIVE_LEFT3 = CT_ABSENT; // Sentinel: no third drive
   public static final int CT_DRIVE_RIGHT1 = 2;
   public static final int CT_DRIVE_RIGHT2 = 4;
-  public static final int CT_DRIVE_RIGHT3 = 6;
+  public static final int CT_DRIVE_RIGHT3 = CT_ABSENT; // Sentinel: no third drive
+  
+  public static final int CT_CENTER_1 = 5;
+  public static final int CT_CENTER_2 = CT_ABSENT;
 
   public static final int CAN_PCM_ID = 7;
   public static final int RELAY_LED_RING = 0;

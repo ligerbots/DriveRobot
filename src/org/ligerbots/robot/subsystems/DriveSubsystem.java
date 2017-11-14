@@ -2,11 +2,13 @@
 package org.ligerbots.robot.subsystems;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.ligerbots.robot.RobotMap;
 
@@ -20,20 +22,28 @@ public class DriveSubsystem extends Subsystem {
   CANTalon right1;
   CANTalon right2;
   CANTalon right3;
+  CANTalon centerMaster;
+  CANTalon centerSlave;
   RobotDrive robotDrive;
   AHRS navX;
-
+  
   /**
    * Creates the instance of DriveSubsystem.
    */
   public DriveSubsystem() {
-    left1 = new CANTalon(RobotMap.CT_DRIVE_LEFT1);
-    left2 = new CANTalon(RobotMap.CT_DRIVE_LEFT2);
-    left3 = new CANTalon(RobotMap.CT_DRIVE_LEFT3);
-    right1 = new CANTalon(RobotMap.CT_DRIVE_RIGHT1);
-    right2 = new CANTalon(RobotMap.CT_DRIVE_RIGHT2);
-    right3 = new CANTalon(RobotMap.CT_DRIVE_RIGHT3);
+    // You must have at least one left and right drive (right?)
+    left1 = makeMasterCANTalon(RobotMap.CT_DRIVE_LEFT1);
 
+    left2 = makeSlaveCANTalon(RobotMap.CT_DRIVE_LEFT2, RobotMap.CT_DRIVE_LEFT1);
+    left3 = makeSlaveCANTalon(RobotMap.CT_DRIVE_LEFT3, RobotMap.CT_DRIVE_LEFT1);
+   
+    right1 = makeMasterCANTalon(RobotMap.CT_DRIVE_RIGHT1);
+    right2 = makeSlaveCANTalon(RobotMap.CT_DRIVE_RIGHT2, RobotMap.CT_DRIVE_RIGHT1);
+    right3 = makeSlaveCANTalon(RobotMap.CT_DRIVE_RIGHT3, RobotMap.CT_DRIVE_RIGHT1);
+
+    centerMaster = makeMasterCANTalon(RobotMap.CT_CENTER_1);
+    centerSlave = makeSlaveCANTalon(RobotMap.CT_CENTER_2, RobotMap.CT_CENTER_2);
+    
     /*
      * WPILIb offers two versions of the RobotDrive class: one that controls two motor controllers,
      * and one that controls four motor controllers Problem is, we have six motors. So we slave the
@@ -41,27 +51,34 @@ public class DriveSubsystem extends Subsystem {
      * motor on each side.
      */
 
-    left1.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-    right1.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-
-    left2.changeControlMode(CANTalon.TalonControlMode.Follower);
-    left2.set(RobotMap.CT_DRIVE_LEFT1);
-
-    left3.changeControlMode(CANTalon.TalonControlMode.Follower);
-    left3.set(RobotMap.CT_DRIVE_LEFT1);
-
-    right2.changeControlMode(CANTalon.TalonControlMode.Follower);
-    right2.set(RobotMap.CT_DRIVE_RIGHT1);
-
-    right3.changeControlMode(CANTalon.TalonControlMode.Follower);
-    right3.set(RobotMap.CT_DRIVE_RIGHT1);
-
-    Arrays.asList(left1, left2, left3, right1, right2, right3)
-        .forEach((CANTalon talon) -> talon.enableBrakeMode(true));
-
     robotDrive = new RobotDrive(left1, right1);
 
     navX = new AHRS(SPI.Port.kMXP);
+  }
+  
+  public static CANTalon makeMasterCANTalon(int ct_id) {
+    CANTalon canTalon = null;
+    if (ct_id != RobotMap.CT_ABSENT) {
+      // TODO: check talon ct_id actually exists?
+      System.out.printf("Creating master CANTalon id %d\n", ct_id);
+      canTalon = new CANTalon(ct_id);
+      canTalon.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+      canTalon.enableBrakeMode(true);
+    }
+    return canTalon;
+  }
+  
+  public static CANTalon makeSlaveCANTalon(int ct_id, int ct_master_id) {
+    CANTalon canTalon = null;
+    if (ct_id!= RobotMap.CT_ABSENT) {
+      // TODO: check talons ct_id and ct_master_id actually exist?
+      System.out.printf("Creating slave CANTalon id %d following %d\n", ct_id, ct_master_id);
+      canTalon = new CANTalon(ct_id);
+      canTalon.changeControlMode(CANTalon.TalonControlMode.Follower);
+      canTalon.set(ct_master_id);
+      canTalon.enableBrakeMode(true);
+    }
+    return canTalon;
   }
 
   public void initDefaultCommand() {
@@ -69,8 +86,22 @@ public class DriveSubsystem extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  public void drive(double throttle, double turn) {
-    robotDrive.arcadeDrive(throttle, turn);
+  public void arcadeDrive(double throttle, double rotate) {
+    robotDrive.arcadeDrive(throttle, rotate);
+  }
+  
+  public void strafe(double x) {
+    if (centerMaster != null) {
+      centerMaster.set(x);    
+    }
+  }
+  
+  public void mecanumDrive(double forward, double strafe, double rotate, double gyroAngle) {
+    robotDrive.mecanumDrive_Cartesian(strafe, forward, rotate, gyroAngle);
+  } 
+
+  public double getYaw() {
+    return navX.getYaw();
   }
 
   public void zeroYaw() {

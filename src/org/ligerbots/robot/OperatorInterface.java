@@ -1,6 +1,8 @@
 package org.ligerbots.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.ligerbots.robot.commands.CompressorCommand;
 import org.ligerbots.robot.commands.ShootCommand;
@@ -43,6 +45,8 @@ public class OperatorInterface {
 
   Joystick.ButtonType toggleCompressor;
 
+  XboxController xbox;
+
   /**
    * Creates the instance of OperatorInterface.
    */
@@ -54,6 +58,24 @@ public class OperatorInterface {
 
     shootButton = new JoystickButton(joystick, 3);
     shootButton.whenPressed(new ShootCommand());
+    xbox = new XboxController(0);
+  }
+
+  
+  /**
+   * 
+   * @return the throttle (forward) amount NOTE forward is positive!
+   */
+  public double getThrottle() {
+    return -xbox.getY(GenericHID.Hand.kLeft);
+  }
+  
+  public double getTurn() {
+    return xbox.getX(GenericHID.Hand.kRight);
+  }
+  
+  public double getStrafe() {
+    return xbox.getX(GenericHID.Hand.kLeft);
   }
 }
 
