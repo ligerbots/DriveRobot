@@ -16,6 +16,7 @@ import org.ligerbots.robot.RobotMap;
 /**
  * The subsystem that handles communication with the android.
  */
+@SuppressWarnings("deprecation")
 public class VisionSubsystem extends Subsystem {
   private static final int CS_STREAM_PORT = 5810;
   private static final int DATA_PORT = 5808;
@@ -23,7 +24,8 @@ public class VisionSubsystem extends Subsystem {
   private static final int CS_MAGIC_NUMBER = 16777216;
 
   Relay ledRing;
-  ITable table = null;
+  @SuppressWarnings("deprecation")
+ITable table = null;
 
   /**
    * Creates the instance of VisionSubsystem.
@@ -48,7 +50,8 @@ public class VisionSubsystem extends Subsystem {
    * 
    * @param enabled Whether image processing should be enabled or not
    */
-  public void setVisionEnabled(boolean enabled) {
+  @SuppressWarnings("deprecation")
+public void setVisionEnabled(boolean enabled) {
     if (table == null) {
       table = NetworkTable.getTable("Vision");
     }
